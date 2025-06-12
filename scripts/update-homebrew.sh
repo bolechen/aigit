@@ -4,7 +4,7 @@
 set -e
 
 VERSION=${1:-$(git describe --tags --abbrev=0)}
-HOMEBREW_REPO="yourusername/homebrew-aigit"  # 替换为您的homebrew仓库
+HOMEBREW_REPO="zzxwill/aigit"
 
 echo "🍺 Updating Homebrew formula for version $VERSION"
 
