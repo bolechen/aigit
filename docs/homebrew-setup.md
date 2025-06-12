@@ -7,8 +7,8 @@
 ### 方法 1：通过 Tap 安装（推荐）
 
 ```bash
-# 添加仓库为 tap
-brew tap zzxwill/aigit
+# 添加仓库为 tap（使用完整URL）
+brew tap bolechen/aigit https://github.com/bolechen/aigit.git
 
 # 安装 aigit
 brew install aigit
@@ -18,7 +18,7 @@ brew install aigit
 
 ```bash
 # 下载 formula 文件
-curl -O https://raw.githubusercontent.com/zzxwill/aigit/master/Formula/aigit.rb
+curl -O https://raw.githubusercontent.com/bolechen/aigit/master/Formula/aigit.rb
 
 # 安装
 brew install --formula aigit.rb

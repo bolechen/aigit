@@ -18,14 +18,14 @@
 #### 选项 1：Homebrew（推荐）
 
 ```shell
-# 将仓库添加为tap
-brew tap zzxwill/aigit
+# 将仓库添加为tap（使用完整URL）
+brew tap bolechen/aigit https://github.com/bolechen/aigit.git
 
 # 安装aigit
 brew install aigit
 
 # 备选方案：从本地formula文件安装
-# curl -O https://raw.githubusercontent.com/zzxwill/aigit/master/Formula/aigit.rb
+# curl -O https://raw.githubusercontent.com/bolechen/aigit/master/Formula/aigit.rb
 # brew install --formula aigit.rb
 ```
 
