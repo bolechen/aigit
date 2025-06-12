@@ -18,7 +18,15 @@
 #### 选项 1：Homebrew（推荐）
 
 ```shell
-brew install https://raw.githubusercontent.com/zzxwill/aigit/master/Formula/aigit.rb
+# 将仓库添加为tap
+brew tap zzxwill/aigit
+
+# 安装aigit
+brew install aigit
+
+# 备选方案：从本地formula文件安装
+# curl -O https://raw.githubusercontent.com/zzxwill/aigit/master/Formula/aigit.rb
+# brew install --formula aigit.rb
 ```
 
 #### 选项 2：下载二进制文件
