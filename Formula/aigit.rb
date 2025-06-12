@@ -4,7 +4,7 @@ class Aigit < Formula
   url "https://github.com/bolechen/aigit/archive/refs/tags/v0.0.7.tar.gz"
   sha256 "fcad064944343513f26f81a2035719a4b011ecf3f0a7cb0346e2d4b6ffda9ece"
   license "Apache-2.0"
-  head "https://github.com/bolechen/aigit.git", branch: "master"
+  head "https://github.com/bolechen/aigit.git", branch: "dev"
 
   depends_on "go" => :build
 

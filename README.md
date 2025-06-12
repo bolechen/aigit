@@ -25,11 +25,14 @@ It's a command-line tool that streamlines the git commit process by automaticall
 # Add the repository as a tap (use full URL)
 brew tap bolechen/aigit https://github.com/bolechen/aigit.git
 
-# Install aigit
+# Install stable version (from releases)
 brew install aigit
 
+# Install development version (from dev branch)
+brew install --HEAD aigit
+
 # Alternative: Install from local formula file
-# curl -O https://raw.githubusercontent.com/bolechen/aigit/master/Formula/aigit.rb
+# curl -O https://raw.githubusercontent.com/bolechen/aigit/dev/Formula/aigit.rb
 # brew install --formula aigit.rb
 ```
 

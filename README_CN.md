@@ -21,11 +21,14 @@
 # 将仓库添加为tap（使用完整URL）
 brew tap bolechen/aigit https://github.com/bolechen/aigit.git
 
-# 安装aigit
+# 安装稳定版本（从releases）
 brew install aigit
 
+# 安装开发版本（从dev分支）
+brew install --HEAD aigit
+
 # 备选方案：从本地formula文件安装
-# curl -O https://raw.githubusercontent.com/bolechen/aigit/master/Formula/aigit.rb
+# curl -O https://raw.githubusercontent.com/bolechen/aigit/dev/Formula/aigit.rb
 # brew install --formula aigit.rb
 ```
 
