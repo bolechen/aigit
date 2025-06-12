@@ -22,14 +22,14 @@ It's a command-line tool that streamlines the git commit process by automaticall
 #### Option 1: Homebrew (Recommended)
 
 ```shell
-# Add the repository as a tap
-brew tap zzxwill/aigit
+# Add the repository as a tap (use full URL)
+brew tap bolechen/aigit https://github.com/bolechen/aigit.git
 
 # Install aigit
 brew install aigit
 
 # Alternative: Install from local formula file
-# curl -O https://raw.githubusercontent.com/zzxwill/aigit/master/Formula/aigit.rb
+# curl -O https://raw.githubusercontent.com/bolechen/aigit/master/Formula/aigit.rb
 # brew install --formula aigit.rb
 ```
 
