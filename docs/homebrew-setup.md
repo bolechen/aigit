@@ -10,23 +10,47 @@
 # 添加仓库为 tap（使用完整URL）
 brew tap bolechen/aigit https://github.com/bolechen/aigit.git
 
-# 安装 aigit
+# 安装稳定版本（从 releases）
 brew install aigit
+
+# 安装开发版本（从 dev 分支，包含最新功能）
+brew install --HEAD aigit
 ```
 
 ### 方法 2：本地 Formula 文件安装
 
 ```bash
-# 下载 formula 文件
-curl -O https://raw.githubusercontent.com/bolechen/aigit/master/Formula/aigit.rb
+# 下载 formula 文件（开发版本）
+curl -O https://raw.githubusercontent.com/bolechen/aigit/dev/Formula/aigit.rb
 
 # 安装
 brew install --formula aigit.rb
 ```
 
+## 版本说明
+
+### 稳定版本 vs 开发版本
+
+- **稳定版本** (`brew install aigit`)：从 GitHub Releases 安装，经过测试的稳定版本
+- **开发版本** (`brew install --HEAD aigit`)：从 dev 分支安装，包含最新功能和改进
+
+### 切换版本
+
+```bash
+# 卸载当前版本
+brew uninstall aigit
+
+# 安装开发版本
+brew install --HEAD aigit
+
+# 或安装稳定版本
+brew install aigit
+```
+
 ## 维护说明
 
 - Formula 文件位于 `Formula/aigit.rb`
+- HEAD 指向 dev 分支（最新开发版本）
 - GitHub Actions 自动更新 formula（发布新版本时）
 - 手动更新：运行 `./scripts/update-homebrew.sh`
 
