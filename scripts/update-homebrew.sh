@@ -1,35 +1,33 @@
 #!/bin/bash
 
-# 自动更新Homebrew formula的脚本
+# 在当前项目中更新Homebrew formula的脚本
 set -e
 
 VERSION=${1:-$(git describe --tags --abbrev=0)}
-HOMEBREW_REPO="zzxwill/aigit"
+PROJECT_REPO="zzxwill/aigit"
 
 echo "🍺 Updating Homebrew formula for version $VERSION"
 
 # 1. 下载并计算SHA256
 echo "📦 Downloading release tarball..."
-TARBALL_URL="https://github.com/zzxwill/aigit/archive/refs/tags/$VERSION.tar.gz"
+TARBALL_URL="https://github.com/$PROJECT_REPO/archive/refs/tags/$VERSION.tar.gz"
 SHA256=$(curl -sL "$TARBALL_URL" | shasum -a 256 | cut -d' ' -f1)
 
 echo "🔍 SHA256: $SHA256"
 
-# 2. 克隆homebrew仓库
-echo "📂 Cloning homebrew repository..."
-TEMP_DIR=$(mktemp -d)
-git clone "https://github.com/$HOMEBREW_REPO.git" "$TEMP_DIR"
+# 2. 确保Formula目录存在
+mkdir -p Formula
 
 # 3. 更新formula
 echo "✏️  Updating formula..."
-cat > "$TEMP_DIR/Formula/aigit.rb" << EOF
+cat > "Formula/aigit.rb" << EOF
 class Aigit < Formula
   desc "AI-powered Git commit message generator using LLM"
-  homepage "https://github.com/zzxwill/aigit"
-  url "https://github.com/zzxwill/aigit/archive/refs/tags/$VERSION.tar.gz"
+  homepage "https://github.com/$PROJECT_REPO"
+  url "https://github.com/$PROJECT_REPO/archive/refs/tags/$VERSION.tar.gz"
   sha256 "$SHA256"
   license "Apache-2.0"
-  head "https://github.com/zzxwill/aigit.git", branch: "master"
+  head "https://github.com/$PROJECT_REPO.git", branch: "master"
 
   depends_on "go" => :build
 
@@ -61,15 +59,21 @@ class Aigit < Formula
 end
 EOF
 
-# 4. 提交更新
+# 4. 提交更新到当前项目
 echo "📤 Committing updates..."
-cd "$TEMP_DIR"
 git add Formula/aigit.rb
-git commit -m "feat: update aigit to $VERSION"
-git push origin main
 
-# 5. 清理
-rm -rf "$TEMP_DIR"
+# 检查是否有变更需要提交
+if git diff --staged --quiet; then
+    echo "ℹ️  No changes to Formula, skipping commit"
+else
+    git commit -m "chore: update homebrew formula to $VERSION
 
-echo "✅ Homebrew formula updated successfully!"
-echo "🎉 Users can now install with: brew install $HOMEBREW_REPO/aigit"
+- Update formula for version $VERSION
+- SHA256: $SHA256"
+
+    echo "✅ Homebrew formula updated successfully!"
+fi
+
+echo "🎉 Users can now install with:"
+echo "   brew install https://raw.githubusercontent.com/$PROJECT_REPO/master/Formula/aigit.rb"
