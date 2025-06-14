@@ -13,7 +13,26 @@
 
 ## 快速开始
 
-### 下载二进制文件
+### 安装
+
+#### 选项 1：Homebrew（推荐）
+
+```shell
+# 将仓库添加为tap（使用完整URL）
+brew tap bolechen/aigit https://github.com/bolechen/aigit.git
+
+# 安装稳定版本（从releases）
+brew install aigit
+
+# 安装开发版本（从dev分支）
+brew install --HEAD aigit
+
+# 备选方案：从本地formula文件安装
+# curl -O https://raw.githubusercontent.com/bolechen/aigit/dev/Formula/aigit.rb
+# brew install --formula aigit.rb
+```
+
+#### 选项 2：下载二进制文件
 
 - 前往 [发布页面](https://github.com/zzxwill/aigit/releases) 下载适合您平台的二进制文件。
 
@@ -21,6 +40,15 @@
 
 ```shell
 chmod +x aigit && sudo mv aigit /usr/local/bin/aigit
+```
+
+#### 选项 3：从源码构建
+
+```shell
+git clone https://github.com/zzxwill/aigit.git
+cd aigit
+go build -o aigit main.go
+sudo mv aigit /usr/local/bin/aigit
 ```
 
 ### 生成提交信息
