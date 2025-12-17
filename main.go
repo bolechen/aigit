@@ -56,7 +56,7 @@ func main() {
 	authAddCmd := &cobra.Command{
 		Use:                   "add <provider> <api_key> [endpoint_id]",
 		Short:                 "Add or update API key for a provider",
-		Long:                  "Add or update API key for a provider. Supported providers: openai, gemini, doubao, deepseek. endpoint_id is required for Doubao provider",
+		Long:                  "Add or update API key for a provider. Supported providers: openai, gemini, doubao, deepseek, qwen. endpoint_id is required for Doubao provider",
 		DisableFlagsInUseLine: true,
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) < 2 {
@@ -67,7 +67,7 @@ func main() {
 			}
 
 			provider := strings.ToLower(args[0])
-			apiKey := args[1]
+			apiKey := strings.TrimSpace(args[1])
 
 			config := llm.NewConfig()
 			if err := config.Load(); err != nil {
@@ -77,7 +77,7 @@ func main() {
 
 			// Validate provider
 			switch provider {
-			case llm.ProviderOpenAI, llm.ProviderGemini, llm.ProviderDeepseek:
+			case llm.ProviderOpenAI, llm.ProviderGemini, llm.ProviderDeepseek, llm.ProviderQwen:
 				if err := config.AddProvider(provider, apiKey); err != nil {
 					fmt.Printf("Error saving config: %v\n", err)
 					os.Exit(1)
@@ -93,7 +93,7 @@ func main() {
 					os.Exit(1)
 				}
 			default:
-				fmt.Printf("Unsupported provider: %s\nSupported providers are: openai, gemini, doubao, deepseek\n", provider)
+				fmt.Printf("Unsupported provider: %s\nSupported providers are: openai, gemini, doubao, deepseek, qwen\n", provider)
 				os.Exit(1)
 			}
 
