@@ -136,6 +136,8 @@ func (c *Config) GetMessageGenerator() (MessageGenerator, error) {
 		return NewDoubaoGenerator(p.APIKey, p.Endpoint), nil
 	case ProviderDeepseek:
 		return NewDeepseekGenerator(p.APIKey), nil
+	case ProviderQwen:
+		return NewQwenGenerator(p.APIKey), nil
 	default:
 		// If unsupported provider is offered, use the default one
 		return NewDefauleGenerator()
