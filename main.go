@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/base64"
 	"fmt"
 	"os"
 	"os/exec"
@@ -11,26 +10,27 @@ import (
 	"github.com/fatih/color"
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
+
 	"github.com/zzxwill/aigit/llm"
 )
 
 var Version = "dev"
 
 func main() {
-	var rootCmd = &cobra.Command{
+	rootCmd := &cobra.Command{
 		Use:   "aigit",
 		Short: "Generate git commit message including title and body",
 		Long:  `AI Git Commi streamlines the git commit process by automatically generating meaningful and standardized commit messages.`,
 	}
 
-	var authCmd = &cobra.Command{
+	authCmd := &cobra.Command{
 		Use:                   "auth",
 		Short:                 "Manage LLM providers and API keys",
 		Long:                  `Manage Language Model providers and their API keys. Use subcommands to list, add, or select providers.`,
 		DisableFlagsInUseLine: true,
 	}
 
-	var authListCmd = &cobra.Command{
+	authListCmd := &cobra.Command{
 		Use:                   "list",
 		Aliases:               []string{"ls"},
 		Short:                 "List configured LLM providers",
@@ -53,7 +53,7 @@ func main() {
 		},
 	}
 
-	var authAddCmd = &cobra.Command{
+	authAddCmd := &cobra.Command{
 		Use:                   "add <provider> <api_key> [endpoint_id]",
 		Short:                 "Add or update API key for a provider",
 		Long:                  "Add or update API key for a provider. Supported providers: openai, gemini, doubao, deepseek, qwen. endpoint_id is required for Doubao provider",
@@ -101,7 +101,7 @@ func main() {
 		},
 	}
 
-	var authUseCmd = &cobra.Command{
+	authUseCmd := &cobra.Command{
 		Use:                   "use [provider]",
 		Short:                 "Set the current LLM provider",
 		Args:                  cobra.ExactArgs(1),
@@ -129,7 +129,7 @@ func main() {
 	authCmd.AddCommand(authUseCmd)
 	rootCmd.AddCommand(authCmd)
 
-	var commitCmd = &cobra.Command{
+	commitCmd := &cobra.Command{
 		Use:   "commit",
 		Short: "Generate git commit message including title and body",
 		Run: func(cmd *cobra.Command, args []string) {
@@ -268,7 +268,7 @@ func main() {
 
 	rootCmd.AddCommand(commitCmd)
 
-	var versionCmd = &cobra.Command{
+	versionCmd := &cobra.Command{
 		Use:     "version",
 		Aliases: []string{"v", "-v", "-version", "--version"},
 		Short:   "Print the version of aigit",
@@ -301,35 +301,10 @@ func main() {
 	}
 }
 
-// Add this helper function before the main function
 func generateMessage(config *llm.Config, diffOutput []byte) (string, error) {
-	var commitMessage string
-	var err error
-
-	apiKey := config.Providers[config.CurrentProvider].APIKey
-
-	switch config.CurrentProvider {
-	case llm.ProviderGemini:
-		commitMessage, err = llm.GenerateGeminiCommitMessage(string(diffOutput), apiKey)
-	case llm.ProviderDoubao:
-		endpoint := config.Providers[config.CurrentProvider].Endpoint
-		commitMessage, err = llm.GenerateDoubaoCommitMessage(string(diffOutput), apiKey, endpoint)
-	case llm.ProviderOpenAI:
-		commitMessage, err = llm.GenerateOpenAICommitMessage(string(diffOutput), apiKey)
-	case llm.ProviderDeepseek:
-		commitMessage, err = llm.GenerateDeepseekCommitMessage(string(diffOutput), apiKey)
-	case llm.ProviderQwen:
-		commitMessage, err = llm.GenerateQwenCommitMessage(string(diffOutput), apiKey)
-	default:
-		apiKey, err1 := base64.StdEncoding.DecodeString(llm.DefaultApiKey)
-		if err1 != nil {
-			return "", fmt.Errorf("error decoding API key: %v", err1)
-		}
-		endpoint, err1 := base64.StdEncoding.DecodeString(llm.DefaultEndpoint)
-		if err1 != nil {
-			return "", fmt.Errorf("error decoding endpoint: %v", err1)
-		}
-		commitMessage, err = llm.GenerateDoubaoCommitMessage(string(diffOutput), string(apiKey), string(endpoint))
+	generator, err := config.GetMessageGenerator()
+	if err != nil {
+		return "", fmt.Errorf("error getting message generator: %w", err)
 	}
-	return commitMessage, err
+	return generator.GenerateCommitMessage(string(diffOutput))
 }

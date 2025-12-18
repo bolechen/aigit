@@ -52,7 +52,7 @@ func (c *Config) Save() error {
 	}
 
 	configDir := filepath.Join(homeDir, ".aigit")
-	if err := os.MkdirAll(configDir, 0700); err != nil {
+	if err := os.MkdirAll(configDir, 0o700); err != nil {
 		return fmt.Errorf("creating config directory: %w", err)
 	}
 
@@ -62,7 +62,7 @@ func (c *Config) Save() error {
 		return fmt.Errorf("encoding config: %w", err)
 	}
 
-	if err := os.WriteFile(configFile, jsonData, 0600); err != nil {
+	if err := os.WriteFile(configFile, jsonData, 0o600); err != nil {
 		return fmt.Errorf("saving config: %w", err)
 	}
 
@@ -104,7 +104,7 @@ func (c *Config) GetAPIKey(provider string) (string, error) {
 
 func (c *Config) ListProviders() []string {
 	providers := make([]string, 0, len(c.Providers))
-	for k, _ := range c.Providers {
+	for k := range c.Providers {
 		if k == c.CurrentProvider {
 			providers = append(providers, k+" *default")
 		} else {
@@ -112,4 +112,34 @@ func (c *Config) ListProviders() []string {
 		}
 	}
 	return providers
+}
+
+// GetMessageGenerator returns a MessageGenerator instance based on the current provider.
+func (c *Config) GetMessageGenerator() (MessageGenerator, error) {
+	provider := c.CurrentProvider
+	if provider == "" {
+		provider = ProviderDoubao
+	}
+
+	p, exists := c.Providers[provider]
+	if !exists {
+		// If no provider is configured, use the default one
+		return NewDefauleGenerator()
+	}
+
+	switch provider {
+	case ProviderGemini:
+		return NewGeminiGenerator(p.APIKey), nil
+	case ProviderOpenAI:
+		return NewOpenAIGenerator(p.APIKey), nil
+	case ProviderDoubao:
+		return NewDoubaoGenerator(p.APIKey, p.Endpoint), nil
+	case ProviderDeepseek:
+		return NewDeepseekGenerator(p.APIKey), nil
+	case ProviderQwen:
+		return NewQwenGenerator(p.APIKey), nil
+	default:
+		// If unsupported provider is offered, use the default one
+		return NewDefauleGenerator()
+	}
 }
