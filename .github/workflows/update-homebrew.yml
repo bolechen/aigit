@@ -85,5 +85,5 @@ jobs:
           - Update formula for version ${{ steps.release.outputs.version }}
           - SHA256: ${{ steps.release.outputs.sha256 }}"
 
-            git push
+            git push origin HEAD
           fi
