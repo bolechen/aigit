@@ -10,10 +10,13 @@ It's a command-line tool that streamlines the git commit process by automaticall
 
 ## Supported 🤖 AI Providers
 
-- [OpenAI](https://openai.com/)
-- [DeepSeek](https://deepseek.com/)
-- [Doubao (豆包)](https://www.volcengine.com/product/doubao) - Built-in, you don't need to bring your own key
-- [Gemini](https://gemini.google.com/)
+| Provider | Default model |
+|---|---|
+| [OpenAI](https://openai.com/) | `gpt-5.4-mini` |
+| [DeepSeek](https://deepseek.com/) | `deepseek-v4-flash-260425` |
+| [Doubao (豆包)](https://www.volcengine.com/product/doubao) - Built-in, you don't need to bring your own key | `doubao-seed-2-0-lite-260428` |
+| [Gemini](https://gemini.google.com/) | `gemini-3.5-flash` |
+| [Qwen (通义千问)](https://www.aliyun.com/product/tongyi) | `qwen-plus` |
 
 ## Getting Started
 
@@ -106,13 +109,13 @@ Enter your choice (press Enter for default):
 $ aigit auth add gemini AIzaSyCb56bjWn02e2v4s_TxHMDnHbSJQSx_tu8
 Successfully added API key for gemini
 
-$ aigit auth add doubao 6e3e438c-a380-4ed5-b597-e01cb82bc4df ep-20250110202503-fdkgq
+$ aigit auth add doubao 6e3e438c-a380-4ed5-b597-e01cb82bc4df
 Successfully added API key for doubao
 
 $ aigit auth ls
 Configured providers:
-  gemini *default
-  doubao
+  gemini(gemini-3.5-flash) *default
+  doubao(doubao-seed-2-0-lite-260428)
 
 $ aigit commit
 
@@ -165,3 +168,16 @@ Enter your choice (press Enter for default): 1
 ✅ Successfully committed changes!
 
 ```
+
+For Doubao, the provider uses the built-in default model. You can optionally pass an
+[Ark inference endpoint ID](https://www.volcengine.com/docs/82379/1099522) (`ep-xxx`) or a model ID to override it:
+
+```shell
+$ aigit auth add doubao <api_key> ep-20250110202503-fdkgq
+```
+
+## Update check
+
+aigit checks for new releases in the background (at most once every 24 hours, cached
+in `~/.aigit/update-check.json`) and prints a notice after the command finishes when a
+newer version is available. Set `AIGIT_NO_UPDATE_CHECK=1` to disable it.

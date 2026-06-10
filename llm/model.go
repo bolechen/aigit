@@ -264,7 +264,7 @@ func generateDeepseekCommitMessage(diff, apiKey string) (string, error) {
 	ctx := context.Background()
 	prompt := fmt.Sprintf("%s\n%s", llmPrompt, diff)
 
-	reqBody := map[string]interface{}{
+	reqBody := map[string]any{
 		"model": deepseekModel,
 		"messages": []map[string]string{
 			{
@@ -298,14 +298,14 @@ func generateDeepseekCommitMessage(diff, apiKey string) (string, error) {
 	}
 	defer resp.Body.Close()
 
-	var result map[string]interface{}
+	var result map[string]any
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return "", fmt.Errorf("decoding response: %w", err)
 	}
 
-	if choices, ok := result["choices"].([]interface{}); ok && len(choices) > 0 {
-		if choice, ok := choices[0].(map[string]interface{}); ok {
-			if message, ok := choice["message"].(map[string]interface{}); ok {
+	if choices, ok := result["choices"].([]any); ok && len(choices) > 0 {
+		if choice, ok := choices[0].(map[string]any); ok {
+			if message, ok := choice["message"].(map[string]any); ok {
 				if content, ok := message["content"].(string); ok {
 					return content, nil
 				}
