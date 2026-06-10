@@ -56,7 +56,7 @@ func main() {
 	authAddCmd := &cobra.Command{
 		Use:                   "add <provider> <api_key> [endpoint_id]",
 		Short:                 "Add or update API key for a provider",
-		Long:                  "Add or update API key for a provider. Supported providers: openai, gemini, doubao, deepseek, qwen. endpoint_id is required for Doubao provider",
+		Long:                  "Add or update API key for a provider. Supported providers: openai, gemini, doubao, deepseek, qwen. For Doubao, an optional endpoint or model ID may be given (defaults to the built-in model)",
 		DisableFlagsInUseLine: true,
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) < 2 {
@@ -77,18 +77,8 @@ func main() {
 
 			// Validate provider
 			switch provider {
-			case llm.ProviderOpenAI, llm.ProviderGemini, llm.ProviderDeepseek, llm.ProviderQwen:
-				if err := config.AddProvider(provider, apiKey); err != nil {
-					fmt.Printf("Error saving config: %v\n", err)
-					os.Exit(1)
-				}
-			case llm.ProviderDoubao:
-				if len(args) < 3 {
-					color.Red("Endpoint ID is required for Doubao provider")
-					color.Red("Please run `aigit auth add doubao <api_key> <endpoint_id>`")
-					os.Exit(1)
-				}
-				if err := config.AddProvider(provider, apiKey, args[2]); err != nil {
+			case llm.ProviderOpenAI, llm.ProviderGemini, llm.ProviderDeepseek, llm.ProviderQwen, llm.ProviderDoubao:
+				if err := config.AddProvider(provider, apiKey, args[2:]...); err != nil {
 					fmt.Printf("Error saving config: %v\n", err)
 					os.Exit(1)
 				}

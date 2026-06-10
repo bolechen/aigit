@@ -28,10 +28,11 @@ const (
 	ProviderQwen     = "qwen"
 
 	// Model constants
-	geminiModel   = "gemini-pro"
-	deepseekModel = "deepseek-chat"
-	openaiModel   = "chatgpt-4o-latest"
+	geminiModel   = "gemini-3.5-flash"
+	deepseekModel = "deepseek-v4-flash-260425"
+	openaiModel   = "gpt-5.4-mini"
 	qwenModel     = "qwen-plus"
+	doubaoModel   = "doubao-seed-2-0-lite-260428"
 )
 
 const (
@@ -205,7 +206,7 @@ func generateOpenAICommitMessage(diff, apiKey string) (string, error) {
 		Messages: openai.F([]openai.ChatCompletionMessageParamUnion{
 			openai.UserMessage(prompt),
 		}),
-		Model: openai.F(openai.ChatModelGPT4o),
+		Model: openai.F(openai.ChatModel(openaiModel)),
 	})
 	if err != nil {
 		return "", fmt.Errorf("generating commit message: %w", err)
@@ -219,6 +220,12 @@ func generateOpenAICommitMessage(diff, apiKey string) (string, error) {
 }
 
 func generateDoubaoCommitMessage(diff, apiKey string, endpointId string) (string, error) {
+	// An Ark endpoint ID (ep-xxx) or model ID may be supplied; fall back to
+	// the default model when neither is configured.
+	if endpointId == "" {
+		endpointId = doubaoModel
+	}
+
 	client := arkruntime.NewClientWithApiKey(
 		apiKey,
 	)
