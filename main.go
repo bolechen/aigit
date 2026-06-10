@@ -28,10 +28,29 @@ func main() {
 		},
 		PersistentPostRun: func(cmd *cobra.Command, args []string) {
 			select {
-			case notice := <-updateNotice:
-				if notice != "" {
-					fmt.Println(notice)
+			case latest := <-updateNotice:
+				if latest == "" {
+					return
 				}
+				fmt.Printf("\n%s %s → %s\n",
+					color.YellowString("A new release of aigit is available:"),
+					strings.TrimPrefix(Version, "v"), strings.TrimPrefix(latest, "v"))
+				prompt := promptui.Select{
+					Label: "Upgrade now",
+					Items: []string{"Yes", "No"},
+					Size:  2,
+				}
+				// Non-interactive runs fail the prompt; skip silently.
+				choice, _, err := prompt.Run()
+				if err != nil || choice != 0 {
+					return
+				}
+				fmt.Println("⬆️  Upgrading aigit to", latest, "...")
+				if err := selfUpgrade(latest); err != nil {
+					color.Red("Upgrade failed: %v", err)
+					return
+				}
+				color.Green("✅ aigit upgraded to %s", latest)
 			// Slightly longer than the update check's HTTP timeout so the
 			// once-per-day refresh can finish and persist its state file;
 			// cached runs deliver instantly.

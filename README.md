@@ -179,5 +179,7 @@ $ aigit auth add doubao <api_key> ep-20250110202503-fdkgq
 ## Update check
 
 aigit checks for new releases in the background (at most once every 24 hours, cached
-in `~/.aigit/update-check.json`) and prints a notice after the command finishes when a
-newer version is available. Set `AIGIT_NO_UPDATE_CHECK=1` to disable it.
+in `~/.aigit/update-check.json`). When a newer version is available, it asks after the
+command finishes whether to upgrade; if you agree, aigit upgrades itself in place
+(via Homebrew for brew installs, otherwise by building the release from source).
+Set `AIGIT_NO_UPDATE_CHECK=1` to disable the check.

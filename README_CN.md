@@ -172,5 +172,7 @@ $ aigit auth add doubao <api_key> ep-20250110202503-fdkgq
 
 ## 版本更新检查
 
-aigit 会在后台检查新版本（每 24 小时最多一次，结果缓存在 `~/.aigit/update-check.json`），
-当有新版本可用时，会在命令执行结束后打印升级提示。设置 `AIGIT_NO_UPDATE_CHECK=1` 可以禁用该功能。
+aigit 会在后台检查新版本（每 24 小时最多一次，结果缓存在 `~/.aigit/update-check.json`）。
+当有新版本可用时，会在命令执行结束后询问是否升级；如果您同意，aigit 会自动完成升级
+（Homebrew 安装的版本通过 brew 升级，其他安装方式则从源码构建新版本并原地替换）。
+设置 `AIGIT_NO_UPDATE_CHECK=1` 可以禁用该功能。
