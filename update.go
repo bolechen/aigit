@@ -9,8 +9,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/fatih/color"
 )
 
 const (
@@ -27,16 +25,16 @@ type updateCheckState struct {
 
 // startUpdateCheck looks for a newer aigit release in the background while
 // the main command runs. The returned channel always delivers exactly one
-// value: an upgrade notice, or "" when no upgrade is available.
+// value: the tag of the newer release, or "" when no upgrade is available.
 func startUpdateCheck(current string) <-chan string {
 	ch := make(chan string, 1)
 	go func() {
-		ch <- updateNotice(current)
+		ch <- newerRelease(current)
 	}()
 	return ch
 }
 
-func updateNotice(current string) string {
+func newerRelease(current string) string {
 	// Source builds report "dev" and have no release to compare against.
 	if current == "dev" || os.Getenv("AIGIT_NO_UPDATE_CHECK") != "" || os.Getenv("CI") != "" {
 		return ""
@@ -50,10 +48,7 @@ func updateNotice(current string) string {
 		return ""
 	}
 
-	return fmt.Sprintf("\n%s %s → %s\nTo upgrade: brew upgrade aigit  (or: go install github.com/zzxwill/aigit@latest)",
-		color.YellowString("A new release of aigit is available:"),
-		strings.TrimPrefix(current, "v"),
-		strings.TrimPrefix(latest, "v"))
+	return latest
 }
 
 // latestVersion returns the most recent release tag, served from the local
