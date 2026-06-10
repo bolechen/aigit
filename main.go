@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"runtime/debug"
 	"strings"
+	"time"
 
 	"github.com/fatih/color"
 	"github.com/manifoldco/promptui"
@@ -17,10 +18,26 @@ import (
 var Version = "dev"
 
 func main() {
+	var updateNotice <-chan string
 	rootCmd := &cobra.Command{
 		Use:   "aigit",
 		Short: "Generate git commit message including title and body",
 		Long:  `AI Git Commi streamlines the git commit process by automatically generating meaningful and standardized commit messages.`,
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			updateNotice = startUpdateCheck(Version)
+		},
+		PersistentPostRun: func(cmd *cobra.Command, args []string) {
+			select {
+			case notice := <-updateNotice:
+				if notice != "" {
+					fmt.Println(notice)
+				}
+			// Slightly longer than the update check's HTTP timeout so the
+			// once-per-day refresh can finish and persist its state file;
+			// cached runs deliver instantly.
+			case <-time.After(3 * time.Second):
+			}
+		},
 	}
 
 	authCmd := &cobra.Command{
