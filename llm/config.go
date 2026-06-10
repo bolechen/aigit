@@ -70,17 +70,11 @@ func (c *Config) Save() error {
 }
 
 func (c *Config) AddProvider(provider, apiKey string, endpoint ...string) error {
-	switch provider {
-	case ProviderDoubao:
-		c.Providers[provider] = Provider{
-			APIKey:   apiKey,
-			Endpoint: endpoint[0],
-		}
-	default:
-		c.Providers[provider] = Provider{
-			APIKey: apiKey,
-		}
+	p := Provider{APIKey: apiKey}
+	if len(endpoint) > 0 {
+		p.Endpoint = endpoint[0]
 	}
+	c.Providers[provider] = p
 	if c.CurrentProvider == "" {
 		c.CurrentProvider = provider
 	}
@@ -104,14 +98,35 @@ func (c *Config) GetAPIKey(provider string) (string, error) {
 
 func (c *Config) ListProviders() []string {
 	providers := make([]string, 0, len(c.Providers))
-	for k := range c.Providers {
+	for k, p := range c.Providers {
+		entry := fmt.Sprintf("%s(%s)", k, providerModel(k, p))
 		if k == c.CurrentProvider {
-			providers = append(providers, k+" *default")
-		} else {
-			providers = append(providers, k)
+			entry += " *default"
 		}
+		providers = append(providers, entry)
 	}
 	return providers
+}
+
+// providerModel returns the model a provider will use: the configured
+// endpoint/model if set, otherwise the provider's default model.
+func providerModel(provider string, p Provider) string {
+	if p.Endpoint != "" {
+		return p.Endpoint
+	}
+	switch provider {
+	case ProviderGemini:
+		return geminiModel
+	case ProviderOpenAI:
+		return openaiModel
+	case ProviderDeepseek:
+		return deepseekModel
+	case ProviderQwen:
+		return qwenModel
+	case ProviderDoubao:
+		return doubaoModel
+	}
+	return "unknown"
 }
 
 // GetMessageGenerator returns a MessageGenerator instance based on the current provider.
